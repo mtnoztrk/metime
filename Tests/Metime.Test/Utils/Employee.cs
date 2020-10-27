@@ -3,13 +3,12 @@ using Metime.Enums;
 using Metime.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Metime.Test.Utils
 {
-    public class Employee : ITimezoneConvertible
+    public class Employee : BaseEntity
     {
-        [Key]
-        public long Id { get; set; }
         public string Name { get; set; }
 
         [IgnoreTimezone]
@@ -18,7 +17,5 @@ namespace Metime.Test.Utils
         public TimeSpan? ShiftEnd { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public TimezoneFormat Kind { get; set; } = TimezoneFormat.UTC;
     }
 }
