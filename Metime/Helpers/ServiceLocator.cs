@@ -13,7 +13,7 @@ namespace Metime.Helpers
 
         public static T GetService<T>()
         {
-            return (T)registeredServices[typeof(T)];
+            return (T)registeredServices[typeof(T)]; 
         }
 
         public static void RegisterService<T>(T service)
