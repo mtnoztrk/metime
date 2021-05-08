@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 namespace Metime
 {
     /// <summary>
-    /// <see cref="TimezoneOption"/> shoud be injected before this. GmtOffsetInMin can be defined inside appsettings.json with this approach.
+    /// <see cref="TimezoneOption"/> shoud be injected before this. 
+    /// GmtOffsetInMin can be defined inside appsettings.json with this approach.
     /// </summary>
     public class DefaultGetOffset : ICanGetOffset
     {
@@ -14,7 +15,7 @@ namespace Metime
             option = options.Value;
         }
 
-        public int GetOffset()
+        public int GetOffset(object rootEntity)
         {
             return option.GmtOffsetInMin;
         }

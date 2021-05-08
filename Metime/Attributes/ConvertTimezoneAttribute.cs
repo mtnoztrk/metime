@@ -27,6 +27,7 @@ namespace Metime.Attributes
     /// </summary>
     [Aspect(Scope.Global)]
     [Injection(typeof(ConvertTimezoneAttribute))]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public sealed class ConvertTimezoneAttribute : Attribute
     {
         // below approach is being used
@@ -47,7 +48,7 @@ namespace Metime.Attributes
             //TODO: sadece public methodlar icin calisir hale getir
             if (retType == typeof(void) || retType == typeof(Task)) // return type is not an object. method signature is void or Task
             {
-                ConvertTimes(args, TimezoneFormat.UTC);
+                ConvertTimes(args, null, TimezoneFormat.UTC);
                 return target(args);
             }
 
@@ -71,9 +72,9 @@ namespace Metime.Attributes
         /// <returns></returns>
         private static T WrapSync<T>(Func<object[], object> target, object[] args)
         {
-            ConvertTimes(args, TimezoneFormat.UTC);
+            ConvertTimes(args, null, TimezoneFormat.UTC); // this one does not use rootEntity until args is partitioned
             var result = (T)target(args);
-            ConvertTimes(result, TimezoneFormat.Local);
+            ConvertTimes(result, result, TimezoneFormat.Local);
             return result;
         }
 
@@ -86,41 +87,41 @@ namespace Metime.Attributes
         /// <returns></returns>
         private static async Task<T> WrapAsync<T>(Func<object[], object> target, object[] args)
         {
-            ConvertTimes(args, TimezoneFormat.UTC);
+            ConvertTimes(args, null, TimezoneFormat.UTC); // this one does not use rootEntity until args is partitioned
             var result = await (Task<T>)target(args);
-            ConvertTimes(result, TimezoneFormat.Local);
+            ConvertTimes(result, result, TimezoneFormat.Local);
             return result;
         }
 
-        private static int GetOffset()
+        private static int GetOffset(object rootEntity, Type resolverType)
         {
-            // multi-tenancy eklendiğinde configden timezone okumak yerine, ilgili tenantın timezonuna göre çevrim yapılacak. 
-            // IOptions yerine DbContext kullanılacak.
-            var service = ServiceLocator.GetService<ICanGetOffset>();
-            return service.GetOffset();
+            var service = ServiceLocator.GetService<TimezoneServiceProvider>();
+            if (resolverType != null)
+                return service.GetOffset(rootEntity, resolverType);
+            return service.GetOffset(rootEntity);
         }
 
-        private static DateTime ToLocal(DateTime utcDateTime)
+        private static DateTime ToLocal(DateTime utcDateTime, object rootEntity, Type resolverType)
         {
-            return utcDateTime.AddMinutes(GetOffset());
+            return utcDateTime.AddMinutes(GetOffset(rootEntity, resolverType));
         }
 
-        private static TimeSpan ToLocal(TimeSpan utcTimeSpan)
+        private static TimeSpan ToLocal(TimeSpan utcTimeSpan, object rootEntity, Type resolverType)
         {
-            var result = utcTimeSpan.Add(TimeSpan.FromMinutes(GetOffset()));
+            var result = utcTimeSpan.Add(TimeSpan.FromMinutes(GetOffset(rootEntity, resolverType)));
             if (result.Ticks > TimeSpan.TicksPerDay)
                 result = result.Subtract(TimeSpan.FromDays(1));
             return result;
         }
 
-        private static DateTime ToUTC(DateTime localDateTime)
+        private static DateTime ToUTC(DateTime localDateTime, object rootEntity, Type resolverType)
         {
-            return localDateTime.AddMinutes(-GetOffset());
+            return localDateTime.AddMinutes(-GetOffset(rootEntity, resolverType));
         }
 
-        private static TimeSpan ToUTC(TimeSpan localTimeSpan)
+        private static TimeSpan ToUTC(TimeSpan localTimeSpan, object rootEntity, Type resolverType)
         {
-            var result = localTimeSpan.Subtract(TimeSpan.FromMinutes(GetOffset()));
+            var result = localTimeSpan.Subtract(TimeSpan.FromMinutes(GetOffset(rootEntity, resolverType)));
             if (result.Ticks < 0)
                 result = result.Add(TimeSpan.FromDays(1));
             return result;
@@ -131,9 +132,14 @@ namespace Metime.Attributes
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">Object that should be converted.</param>
+        /// <param name="rootEntity">Just holds reference to original entity for timezone calculation logic.</param>
         /// <param name="targetFormat">What is the targeted time format.</param>
         /// <param name="processedProperties">No need to fill it, this is used inside this function for keeping track of recursion.</param>
-        private static void ConvertTimes<T>(T entity, TimezoneFormat targetFormat, List<string> processedProperties = null)
+        private static void ConvertTimes<T>(
+            T entity,
+            T rootEntity,
+            TimezoneFormat targetFormat,
+            List<string> processedProperties = null)
         {
             if (entity == null)
                 return;
@@ -148,7 +154,7 @@ namespace Metime.Attributes
             {
                 foreach (var element in (IEnumerable)entity)
                 {
-                    ConvertTimes(element, targetFormat, processedProperties);
+                    ConvertTimes(element, element, targetFormat, processedProperties);
                 }
             }
             else
@@ -168,6 +174,8 @@ namespace Metime.Attributes
                         if (attributes.Any(c => c.GetType() == typeof(IgnoreTimezoneAttribute))) // Don't consider ignored properties.
                             continue;
 
+                        var resolverType = GetResolverType(attributes);
+
                         if (p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?))
                         {
                             var propValue = p.GetValue(entity, null);
@@ -175,9 +183,9 @@ namespace Metime.Attributes
                                 continue;
 
                             if (targetFormat == TimezoneFormat.UTC)
-                                propValue = ToUTC((DateTime)propValue);
+                                propValue = ToUTC((DateTime)propValue, rootEntity, resolverType);
                             else
-                                propValue = ToLocal((DateTime)propValue);
+                                propValue = ToLocal((DateTime)propValue, rootEntity, resolverType);
 
                             p.SetValue(entity, propValue);
                         }
@@ -188,9 +196,9 @@ namespace Metime.Attributes
                                 continue;
 
                             if (targetFormat == TimezoneFormat.UTC)
-                                propValue = ToUTC((TimeSpan)propValue);
+                                propValue = ToUTC((TimeSpan)propValue, rootEntity, resolverType);
                             else
-                                propValue = ToLocal((TimeSpan)propValue);
+                                propValue = ToLocal((TimeSpan)propValue, rootEntity, resolverType);
 
                             p.SetValue(entity, propValue);
                         }
@@ -202,7 +210,7 @@ namespace Metime.Attributes
                             // this line changes kind, before going into recursion. So if the child entity has reference to the parent
                             // entity, Parent doesn't get changed again.
                             ((ITimezoneConvertible)entity).Kind = targetFormat;
-                            ConvertTimes(p.GetValue(entity, null), targetFormat, processedProperties);
+                            ConvertTimes(p.GetValue(entity, null), rootEntity, targetFormat, processedProperties);
                         }
                     }
                 }
@@ -222,5 +230,12 @@ namespace Metime.Attributes
             return type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type);
         }
 
+        private static Type GetResolverType(object[] attributes)
+        {
+            if (!attributes.Any(c => c is ConvertWithAttribute))
+                return null;
+            var convertAttribute = (ConvertWithAttribute)attributes.First(c => c is ConvertWithAttribute);
+            return convertAttribute.resolverService;
+        }
     }
 }
