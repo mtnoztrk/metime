@@ -2,7 +2,7 @@
 {
     public class FixedGetOffset : ICanGetOffset
     {
-        public int GetOffset()
+        public int GetOffset(object rootEntity)
         {
             return 180;
         }

@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metime", "Metime\Metime.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8B9DCD08-AF1B-4761-ADED-C0F05B5AE411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metime.Test", "Tests\Metime.Test\Metime.Test.csproj", "{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metime.Test", "Tests\Metime.Test\Metime.Test.csproj", "{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7663452C-4259-4568-889C-B93BB7652E13}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metime.Analyzer", "Metime.Analyzer\Metime.Analyzer\Metime.Analyzer.csproj", "{5F175EB1-2EA9-4E7A-A5A1-981FED838B64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +27,10 @@ Global
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F175EB1-2EA9-4E7A-A5A1-981FED838B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F175EB1-2EA9-4E7A-A5A1-981FED838B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F175EB1-2EA9-4E7A-A5A1-981FED838B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F175EB1-2EA9-4E7A-A5A1-981FED838B64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -96,9 +96,7 @@ namespace Metime.Attributes
         private static int GetOffset(object rootEntity, Type resolverType)
         {
             var service = ServiceLocator.GetService<TimezoneServiceProvider>();
-            if (resolverType != null)
-                return service.GetOffset(rootEntity, resolverType);
-            return service.GetOffset(rootEntity);
+            return service.GetOffset(rootEntity, resolverType);
         }
 
         private static DateTime ToLocal(DateTime utcDateTime, object rootEntity, Type resolverType)
@@ -233,9 +231,9 @@ namespace Metime.Attributes
         private static Type GetResolverType(object[] attributes)
         {
             if (!attributes.Any(c => c is ConvertWithAttribute))
-                return null;
+                return typeof(ICanGetOffset); // default resolver should be registered with interface
             var convertAttribute = (ConvertWithAttribute)attributes.First(c => c is ConvertWithAttribute);
-            return convertAttribute.resolverService;
+            return convertAttribute.resolverService; // rest of the resolvers should be registered with concrete implementation
         }
     }
 }

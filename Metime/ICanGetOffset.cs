@@ -7,6 +7,6 @@
         /// </summary>
         /// <param name="rootEntity">root object being processed</param>
         /// <returns></returns>
-        public int GetOffset(object rootEntity);
+        int GetOffset(object rootEntity);
     }
 }

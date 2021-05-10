@@ -1,5 +1,4 @@
-﻿using Metime.Attributes;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Metime
@@ -7,25 +6,15 @@ namespace Metime
     /// <summary>
     /// Decorator for using scoped services within ICanGetOffset implemetations.
     /// </summary>
-    internal class TimezoneServiceProvider : ICanGetOffset
+    internal class TimezoneServiceProvider
     {
         private IServiceScopeFactory _serviceScopeFactory;
         public TimezoneServiceProvider(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
-
-        public int GetOffset(object rootEntity)
-        {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<ICanGetOffset>();
-                return service.GetOffset(rootEntity);
-            }
-        }
-
         /// <summary>
-        /// custom offest resolver. Used with <see cref="ConvertWithAttribute"/>
+        /// gets offset resolver with type.
         /// </summary>
         /// <param name="rootEntity"></param>
         /// <param name="type"></param>
