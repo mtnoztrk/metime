@@ -1,8 +1,4 @@
-﻿using Metime.Attributes;
-using Metime.Enums;
-using Metime.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Metime.Test.Utils

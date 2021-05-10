@@ -5,7 +5,9 @@
     <IsPackable>false</IsPackable>
 
     <!-- Avoid ID conflicts with the package project. -->
-    <PackageId>*$(MSBuildProjectFullPath)*</PackageId>
+    <PackageId>Metime.Analyzer</PackageId>
+    <Version>0.0.5</Version>
+    <Authors>Metin Ozturk</Authors>
   </PropertyGroup>
 
   <ItemGroup>

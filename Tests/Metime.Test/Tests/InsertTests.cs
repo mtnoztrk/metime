@@ -22,7 +22,7 @@ namespace Metime.Test.Tests
                 CreatedAt = DateTime.Now,
                 ShiftEnd = new TimeSpan(18,0,0),
                 ShiftStart = new TimeSpan(9,0,0),
-                Kind = Enums.TimezoneFormat.Local
+                Kind = TimezoneFormat.Local
             };
             await _service.InsertAsync(emp);
             Assert.False(emp.Id == 0);
