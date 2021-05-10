@@ -48,7 +48,27 @@ namespace Metime.Analyzer
                 if (arg.TypeKind == TypeKind.Error)
                     return;
 
-                if (!arg.GetAttributes().Any(a => a.AttributeClass.ToDisplayString() == "Metime.ICanGetOffset"))
+                var hasImplementedInterface = false;
+                foreach (var a in arg.GetAttributes())
+                {
+                    foreach (var i in a.AttributeClass.Interfaces)
+                    {
+                        foreach (var ia in i.GetAttributes())
+                        {
+                            if (ia.AttributeClass.ToDisplayString() == "Metime.ICanGetOffset")
+                            {
+                                hasImplementedInterface = true;
+                                break;
+                            }
+                        }
+                        if (hasImplementedInterface)
+                            break;
+                    }
+                    if (hasImplementedInterface)
+                        break;
+                }
+
+                if (hasImplementedInterface)
                     context.ReportDiagnostic(Diagnostic.Create(Rules.TypeMustBeICanGetOffset, location, arg.Name));
             }
         }
