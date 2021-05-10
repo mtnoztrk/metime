@@ -1,6 +1,4 @@
-﻿using Metime.Enums;
-
-namespace Metime.Models
+﻿namespace Metime
 {
     public interface ITimezoneConvertible
     {
