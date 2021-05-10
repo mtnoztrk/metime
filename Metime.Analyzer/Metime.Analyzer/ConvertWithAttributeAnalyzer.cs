@@ -11,10 +11,10 @@ namespace Metime.Analyzer
     {
         public static readonly DiagnosticDescriptor InjectionMustBeAttribute =
             new DiagnosticDescriptor(
-                    id: "MT1000",
-                    title: "Razor parsing error",
-                    messageFormat: "bu ne oglum ne anlatiyon ya",
-                    category: "Razor.Parser",
+                    id: "MT1001",
+                    title: "Attribute usage error",
+                    messageFormat: "Used type must implement ICanGetOffset",
+                    category: "Metime.Design",
                     defaultSeverity: DiagnosticSeverity.Error,
                     isEnabledByDefault: true);
     }
