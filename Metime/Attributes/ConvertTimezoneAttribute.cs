@@ -102,17 +102,17 @@ namespace Metime.Attributes
             return utcDateTime.AddMinutes(GetOffset(rootEntity, resolverType));
         }
 
+        private static DateTime ToUTC(DateTime localDateTime, object rootEntity, Type resolverType)
+        {
+            return localDateTime.AddMinutes(-GetOffset(rootEntity, resolverType));
+        }
+
         private static TimeSpan ToLocal(TimeSpan utcTimeSpan, object rootEntity, Type resolverType)
         {
             var result = utcTimeSpan.Add(TimeSpan.FromMinutes(GetOffset(rootEntity, resolverType)));
             if (result.Ticks > TimeSpan.TicksPerDay)
                 result = result.Subtract(TimeSpan.FromDays(1));
             return result;
-        }
-
-        private static DateTime ToUTC(DateTime localDateTime, object rootEntity, Type resolverType)
-        {
-            return localDateTime.AddMinutes(-GetOffset(rootEntity, resolverType));
         }
 
         private static TimeSpan ToUTC(TimeSpan localTimeSpan, object rootEntity, Type resolverType)
@@ -144,9 +144,9 @@ namespace Metime.Attributes
             if (processedProperties == null)
                 processedProperties = new List<string>();
 
-            var type = entity.GetType();
+            var entityType = entity.GetType();
 
-            if (IsObjectList(type))
+            if (IsObjectList(entityType))
             {
                 foreach (var element in (IEnumerable)entity)
                 {
@@ -155,11 +155,10 @@ namespace Metime.Attributes
             }
             else
             {
-                var convertible = entity as ITimezoneConvertible;
-                if (convertible == null || convertible.Kind == targetFormat)
+                if (!(entity is ITimezoneConvertible convertible) || convertible.Kind == targetFormat)
                     return;
 
-                var properties = type.GetProperties();
+                var properties = entityType.GetProperties();
                 foreach (var p in properties)
                 {
                     // propertyNames list consists of already processed objects and lists so ReferenceLoop is dealt with.
@@ -170,27 +169,27 @@ namespace Metime.Attributes
                         if (attributes.Any(c => c.GetType() == typeof(IgnoreTimezoneAttribute))) // Don't consider ignored properties.
                             continue;
 
-                        var resolverType = GetResolverType(attributes);
-
                         if (p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?))
                         {
                             var propValue = p.GetValue(entity, null);
-                            if (propValue == null)
-                                continue;
+                            if (propValue == null) continue;
+                            var castedPropValue = (DateTime)propValue;
+                            if (castedPropValue == DateTime.MinValue) continue; // uninitialized datetimes should not be converted.
 
+                            var resolverType = GetResolverType(attributes);
                             if (targetFormat == TimezoneFormat.UTC)
-                                propValue = ToUTC((DateTime)propValue, rootEntity, resolverType);
+                                castedPropValue = ToUTC(castedPropValue, rootEntity, resolverType);
                             else
-                                propValue = ToLocal((DateTime)propValue, rootEntity, resolverType);
+                                castedPropValue = ToLocal(castedPropValue, rootEntity, resolverType);
 
-                            p.SetValue(entity, propValue);
+                            p.SetValue(entity, castedPropValue);
                         }
                         else if (p.PropertyType == typeof(TimeSpan) || p.PropertyType == typeof(TimeSpan?))
                         {
                             var propValue = p.GetValue(entity, null);
-                            if (propValue == null)
-                                continue;
+                            if (propValue == null) continue;
 
+                            var resolverType = GetResolverType(attributes);
                             if (targetFormat == TimezoneFormat.UTC)
                                 propValue = ToUTC((TimeSpan)propValue, rootEntity, resolverType);
                             else
