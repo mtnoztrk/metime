@@ -43,34 +43,34 @@ namespace Metime.Analyzer
             if (attr.AttributeConstructor == null)
                 return;
 
-            if (attr.ConstructorArguments[0].Value is INamedTypeSymbol arg)
-            {
-                if (arg.TypeKind == TypeKind.Error)
-                    return;
+            //if (attr.ConstructorArguments[0].Value is INamedTypeSymbol arg)
+            //{
+            //    if (arg.TypeKind == TypeKind.Error)
+            //        return;
 
-                var hasImplementedInterface = false;
-                foreach (var a in arg.GetAttributes())
-                {
-                    foreach (var i in a.AttributeClass.Interfaces)
-                    {
-                        foreach (var ia in i.GetAttributes())
-                        {
-                            if (ia.AttributeClass.ToDisplayString() == "Metime.ICanGetOffset")
-                            {
-                                hasImplementedInterface = true;
-                                break;
-                            }
-                        }
-                        if (hasImplementedInterface)
-                            break;
-                    }
-                    if (hasImplementedInterface)
-                        break;
-                }
+            //    var hasImplementedInterface = false;
+            //    foreach (var a in arg.GetAttributes())
+            //    {
+            //        foreach (var i in a.AttributeClass.Interfaces)
+            //        {
+            //            foreach (var ia in i.GetAttributes())
+            //            {
+            //                if (ia.AttributeClass.ToDisplayString() == "Metime.ICanGetOffset")
+            //                {
+            //                    hasImplementedInterface = true;
+            //                    break;
+            //                }
+            //            }
+            //            if (hasImplementedInterface)
+            //                break;
+            //        }
+            //        if (hasImplementedInterface)
+            //            break;
+            //    }
 
-                if (hasImplementedInterface)
-                    context.ReportDiagnostic(Diagnostic.Create(Rules.TypeMustBeICanGetOffset, location, arg.Name));
-            }
+            //    if (hasImplementedInterface)
+            //        context.ReportDiagnostic(Diagnostic.Create(Rules.TypeMustBeICanGetOffset, location, arg.Name));
+            //}
         }
     }
 }
