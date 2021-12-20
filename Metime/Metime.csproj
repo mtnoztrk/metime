@@ -18,15 +18,4 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Metime.Analyzer\Metime.Analyzer\Metime.Analyzer.csproj">
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>**\Microsoft.CodeAnalysis.*; **\System.Collections.Immutable.*;**\System.Reflection.Metadata.*; **\System.Composition.*</ExcludeAssets>
-    </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="$(TargetDir)Metime.Analyzer.dll" pack="true" PackagePath="analyzers/dotnet/cs"></None>
-  </ItemGroup>
 </Project>
