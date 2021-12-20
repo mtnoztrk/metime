@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Metime
@@ -17,19 +19,18 @@ namespace Metime
         /// gets offset resolver.
         /// </summary>
         /// <param name="rootEntity"></param>
-        /// <param name="entityName"></param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public int GetOffset(object rootEntity, string entityName, string propertyName)
+        public int GetOffset<T>(object rootEntity, string propertyName) where T : class, ITimezoneConvertible
         {
             //TODO: cache these services, don't create scope all the time.
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var services = scope.ServiceProvider.GetServices<ICanGetOffsetCustomProperty>();
+                var services = scope.ServiceProvider.GetServices<ICanGetOffsetCustom<T>>();
                 foreach (var service in services)
                 {
-                    //TODO: add check for multiple services doing the same thing.
-                    if (service.EntityName == entityName && service.PropertyNames.Contains(propertyName)) return service.GetOffset(rootEntity);
+                    //TODO: add check for multiple services doing the same properties.
+                    if (service.PropertyNames.Contains(propertyName)) return service.GetOffset(rootEntity);
                 }
                 var defaultService = scope.ServiceProvider.GetRequiredService<ICanGetOffset>();
                 return defaultService.GetOffset(rootEntity);

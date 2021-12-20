@@ -26,10 +26,11 @@ namespace Metime.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCustomResolver<T>(this IServiceCollection services)
-            where T : class, ICanGetOffsetCustomProperty
+        public static IServiceCollection AddCustomResolver<TEntity, TResolver>(this IServiceCollection services)
+            where TEntity : class, ITimezoneConvertible
+            where TResolver : class, ICanGetOffsetCustom<TEntity>
         {
-            services.AddScoped<ICanGetOffsetCustomProperty, T>();
+            services.AddScoped<ICanGetOffsetCustom<TEntity>, TResolver>();
             return services;
         }
     }

@@ -91,10 +91,12 @@ namespace Metime.Attributes
             return result;
         }
 
-        private static int GetOffset(object rootEntity, string entityName, string propertyName)
+        private static int GetOffset(object rootEntity, Type entityType, string propertyName)
         {
             var service = ServiceLocator.GetService<TimezoneServiceProvider>();
-            return service.GetOffset(rootEntity, entityName, propertyName);
+            MethodInfo method = service.GetType().GetMethod("GetOffset", BindingFlags.Public | BindingFlags.Static);
+            method = method.MakeGenericMethod(entityType);
+            return (int)method.Invoke(service, new object[] { rootEntity, propertyName });
         }
 
         private static DateTime ToLocal(DateTime utcDateTime, int offset)
@@ -176,7 +178,7 @@ namespace Metime.Attributes
                             var castedPropValue = (DateTime)propValue;
                             if (castedPropValue == DateTime.MinValue) continue; // uninitialized datetimes should not be converted.
 
-                            var offset = GetOffset(rootEntity, entityType.Name, p.Name);
+                            var offset = GetOffset(rootEntity, entityType, p.Name);
                             if (targetFormat == TimezoneFormat.UTC)
                                 castedPropValue = ToUTC(castedPropValue, offset);
                             else
@@ -189,7 +191,7 @@ namespace Metime.Attributes
                             var propValue = p.GetValue(entity, null);
                             if (propValue == null) continue;
 
-                            var offset = GetOffset(rootEntity, entityType.Name, p.Name);
+                            var offset = GetOffset(rootEntity, entityType, p.Name);
                             if (targetFormat == TimezoneFormat.UTC)
                                 propValue = ToUTC((TimeSpan)propValue, offset);
                             else
