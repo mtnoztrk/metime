@@ -91,33 +91,33 @@ namespace Metime.Attributes
             return result;
         }
 
-        private static int GetOffset(object rootEntity, Type resolverType)
+        private static int GetOffset(object rootEntity, string entityName, string propertyName)
         {
             var service = ServiceLocator.GetService<TimezoneServiceProvider>();
-            return service.GetOffset(rootEntity, resolverType);
+            return service.GetOffset(rootEntity, entityName, propertyName);
         }
 
-        private static DateTime ToLocal(DateTime utcDateTime, object rootEntity, Type resolverType)
+        private static DateTime ToLocal(DateTime utcDateTime, int offset)
         {
-            return utcDateTime.AddMinutes(GetOffset(rootEntity, resolverType));
+            return utcDateTime.AddMinutes(offset);
         }
 
-        private static DateTime ToUTC(DateTime localDateTime, object rootEntity, Type resolverType)
+        private static DateTime ToUTC(DateTime localDateTime, int offset)
         {
-            return localDateTime.AddMinutes(-GetOffset(rootEntity, resolverType));
+            return localDateTime.AddMinutes(-offset);
         }
 
-        private static TimeSpan ToLocal(TimeSpan utcTimeSpan, object rootEntity, Type resolverType)
+        private static TimeSpan ToLocal(TimeSpan utcTimeSpan, int offset)
         {
-            var result = utcTimeSpan.Add(TimeSpan.FromMinutes(GetOffset(rootEntity, resolverType)));
+            var result = utcTimeSpan.Add(TimeSpan.FromMinutes(offset));
             if (result.Ticks > TimeSpan.TicksPerDay)
                 result = result.Subtract(TimeSpan.FromDays(1));
             return result;
         }
 
-        private static TimeSpan ToUTC(TimeSpan localTimeSpan, object rootEntity, Type resolverType)
+        private static TimeSpan ToUTC(TimeSpan localTimeSpan, int offset)
         {
-            var result = localTimeSpan.Subtract(TimeSpan.FromMinutes(GetOffset(rootEntity, resolverType)));
+            var result = localTimeSpan.Subtract(TimeSpan.FromMinutes(offset));
             if (result.Ticks < 0)
                 result = result.Add(TimeSpan.FromDays(1));
             return result;
@@ -176,11 +176,11 @@ namespace Metime.Attributes
                             var castedPropValue = (DateTime)propValue;
                             if (castedPropValue == DateTime.MinValue) continue; // uninitialized datetimes should not be converted.
 
-                            var resolverType = GetResolverType(attributes);
+                            var offset = GetOffset(rootEntity, entityType.Name, p.Name);
                             if (targetFormat == TimezoneFormat.UTC)
-                                castedPropValue = ToUTC(castedPropValue, rootEntity, resolverType);
+                                castedPropValue = ToUTC(castedPropValue, offset);
                             else
-                                castedPropValue = ToLocal(castedPropValue, rootEntity, resolverType);
+                                castedPropValue = ToLocal(castedPropValue, offset);
 
                             p.SetValue(entity, castedPropValue);
                         }
@@ -189,11 +189,11 @@ namespace Metime.Attributes
                             var propValue = p.GetValue(entity, null);
                             if (propValue == null) continue;
 
-                            var resolverType = GetResolverType(attributes);
+                            var offset = GetOffset(rootEntity, entityType.Name, p.Name);
                             if (targetFormat == TimezoneFormat.UTC)
-                                propValue = ToUTC((TimeSpan)propValue, rootEntity, resolverType);
+                                propValue = ToUTC((TimeSpan)propValue, offset);
                             else
-                                propValue = ToLocal((TimeSpan)propValue, rootEntity, resolverType);
+                                propValue = ToLocal((TimeSpan)propValue, offset);
 
                             p.SetValue(entity, propValue);
                         }
@@ -223,14 +223,6 @@ namespace Metime.Attributes
         private static bool IsObjectList(Type type)
         {
             return type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type);
-        }
-
-        private static Type GetResolverType(object[] attributes)
-        {
-            if (!attributes.Any(c => c is ConvertWithAttribute))
-                return typeof(ICanGetOffset); // default resolver should be registered with interface
-            var convertAttribute = (ConvertWithAttribute)attributes.First(c => c is ConvertWithAttribute);
-            return convertAttribute.resolverService; // rest of the resolvers should be registered with concrete implementation
         }
     }
 }

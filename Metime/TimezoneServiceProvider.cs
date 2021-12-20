@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+using System.Linq;
 
 namespace Metime
 {
@@ -14,17 +14,25 @@ namespace Metime
             _serviceScopeFactory = serviceScopeFactory;
         }
         /// <summary>
-        /// gets offset resolver with type.
+        /// gets offset resolver.
         /// </summary>
         /// <param name="rootEntity"></param>
-        /// <param name="type"></param>
+        /// <param name="entityName"></param>
+        /// <param name="propertyName"></param>
         /// <returns></returns>
-        public int GetOffset(object rootEntity, Type type)
+        public int GetOffset(object rootEntity, string entityName, string propertyName)
         {
+            //TODO: cache these services, don't create scope all the time.
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var service = (ICanGetOffset)scope.ServiceProvider.GetRequiredService(type);
-                return service.GetOffset(rootEntity);
+                var services = scope.ServiceProvider.GetServices<ICanGetOffsetCustomProperty>();
+                foreach (var service in services)
+                {
+                    //TODO: add check for multiple services doing the same thing.
+                    if (service.EntityName == entityName && service.PropertyNames.Contains(propertyName)) return service.GetOffset(rootEntity);
+                }
+                var defaultService = scope.ServiceProvider.GetRequiredService<ICanGetOffset>();
+                return defaultService.GetOffset(rootEntity);
             }
         }
     }
