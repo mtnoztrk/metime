@@ -94,7 +94,7 @@ namespace Metime.Attributes
         private static int GetOffset(object rootEntity, Type entityType, string propertyName)
         {
             var service = ServiceLocator.GetService<TimezoneServiceProvider>();
-            MethodInfo method = service.GetType().GetMethod("GetOffset", BindingFlags.Public | BindingFlags.Static);
+            MethodInfo method = service.GetType().GetMethod("GetOffset");
             method = method.MakeGenericMethod(entityType);
             return (int)method.Invoke(service, new object[] { rootEntity, propertyName });
         }
