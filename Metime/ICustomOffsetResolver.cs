@@ -1,6 +1,6 @@
 ﻿namespace Metime
 {
-    public interface ICanGetOffsetCustom<T> where T : class, ITimezoneConvertible
+    public interface ICustomOffsetResolver<T> where T : class, ITimezoneConvertible
     {
         /// <summary>
         /// gets offset

@@ -19,7 +19,7 @@ namespace Metime.Attributes
     /// bir kere çevrilmesini garanti ediyor.
     /// <code></code>
     /// Timezone offset şimdilik configden okunuyor. Attribute'ün bunu okuyabilmesi için ve gelecekte DbContext'e erişebilmesi için static <see cref="ServiceLocator"/>
-    /// yazıldı. Startup'ta <see cref="ICanGetOffset"/>'in ServiceLocator'a kaydedilmesi gerekiyor.
+    /// yazıldı. Startup'ta <see cref="IOffsetResolver"/>'in ServiceLocator'a kaydedilmesi gerekiyor.
     /// <code></code>
     /// Metin
     /// </summary>

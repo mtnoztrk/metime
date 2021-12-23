@@ -2,7 +2,7 @@
 
 namespace Metime.Test.Utils
 {
-    public class FlightGetOffset : ICanGetOffsetCustom<Flight>
+    public class FlightGetOffset : ICustomOffsetResolver<Flight>
     {
         public int GetOffset(Flight rootEntity, string propertyName)
         {

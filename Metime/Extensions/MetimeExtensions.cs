@@ -13,10 +13,10 @@ namespace Metime.Extensions
         }
 
         public static IServiceCollection AddMetime<T>(this IServiceCollection services)
-            where T : class, ICanGetOffset
+            where T : class, IOffsetResolver
         {
             services.AddSingleton<TimezoneServiceProvider>();
-            services.AddScoped<ICanGetOffset, T>();
+            services.AddScoped<IOffsetResolver, T>();
             return services;
         }
 
@@ -28,9 +28,9 @@ namespace Metime.Extensions
         /// <returns></returns>
         public static IServiceCollection AddCustomResolver<TEntity, TResolver>(this IServiceCollection services)
             where TEntity : class, ITimezoneConvertible
-            where TResolver : class, ICanGetOffsetCustom<TEntity>
+            where TResolver : class, ICustomOffsetResolver<TEntity>
         {
-            services.AddScoped<ICanGetOffsetCustom<TEntity>, TResolver>();
+            services.AddScoped<ICustomOffsetResolver<TEntity>, TResolver>();
             return services;
         }
     }

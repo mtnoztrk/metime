@@ -1,6 +1,6 @@
 ﻿namespace Metime.Test.Utils
 {
-    public class FixedGetOffset : ICanGetOffset
+    public class FixedGetOffset : IOffsetResolver
     {
         public int GetOffset(object rootEntity)
         {

@@ -23,7 +23,7 @@ namespace Metime
             //TODO: cache these services, don't create scope all the time.
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var defaultService = scope.ServiceProvider.GetRequiredService<ICanGetOffset>();
+                var defaultService = scope.ServiceProvider.GetRequiredService<IOffsetResolver>();
                 return defaultService.GetOffset(rootEntity);
             }
         }
@@ -40,7 +40,7 @@ namespace Metime
             //TODO: cache these services, don't create scope all the time.
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var service = scope.ServiceProvider.GetRequiredService<ICanGetOffsetCustom<T>>();
+                var service = scope.ServiceProvider.GetRequiredService<ICustomOffsetResolver<T>>();
                 return service.GetOffset(rootEntity, propertyName);
             }
         }
