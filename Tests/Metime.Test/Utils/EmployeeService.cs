@@ -1,6 +1,6 @@
 ﻿using Metime.Attributes;
+using Metime.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Metime.Test.Utils
@@ -8,22 +8,22 @@ namespace Metime.Test.Utils
     [ConvertTimezone]
     public class EmployeeService
     {
-        private readonly TestDbContext _dbContext;
-        public EmployeeService(TestDbContext dbContext)
+        public async Task<Employee> InsertAsync(Employee user)
         {
-            _dbContext = dbContext;
-        }
-
-        public async Task<Employee> InsertAsync (Employee user)
-        {
-            await _dbContext.Employees.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-            return user;
+            using (var ctx = new TestDataContextFactory().Create())
+            {
+                await ctx.Employees.AddAsync(user);
+                await ctx.SaveChangesAsync();
+                return user;
+            }
         }
 
         public Task<Employee> GetAsync(int id)
         {
-            return _dbContext.Employees.FirstOrDefaultAsync(c => c.Id == id);
+            using (var ctx = new TestDataContextFactory().Create())
+            {
+                return ctx.Employees.FirstOrDefaultAsync(c => c.Id == id);
+            }
         }
     }
 }

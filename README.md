@@ -1,5 +1,5 @@
 # Metime
-Helper library for timezone calculations. Special thanks to the [**AspectInjector**](https://github.com/pamidur/aspect-injector)
+Helper framework for timezone calculations. Special thanks to the [**AspectInjector**](https://github.com/pamidur/aspect-injector)
 # Motivation
 Well.. Enterprise product's timezones suck.
 # Installation
@@ -30,6 +30,11 @@ public class Startup
     }
 }
 ```
+# Important Notes
+
+If you are getting UTC value within requests, you should use IgnoreTimezone
+If you are assigning UTC value to the property, you should do it inside service method so it doesn't converted to UTC again by mistake
+
 # Usage
 Detailed example can be found in example project. (WIP)
 

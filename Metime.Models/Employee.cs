@@ -1,11 +1,10 @@
 ﻿using Metime.Attributes;
-using System;
 
-namespace Metime.Test.Utils
+namespace Metime.Models
 {
     public class Employee : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [IgnoreTimezone]
         public DateTime BirthDate { get; set; }

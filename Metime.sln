@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metime.Test", "Tests\Metime
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7663452C-4259-4568-889C-B93BB7652E13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metime.Models", "Metime.Models\Metime.Models.csproj", "{DE201FAC-8B31-49FE-95EA-FABE18E91CDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,12 +27,17 @@ Global
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE201FAC-8B31-49FE-95EA-FABE18E91CDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE201FAC-8B31-49FE-95EA-FABE18E91CDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE201FAC-8B31-49FE-95EA-FABE18E91CDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE201FAC-8B31-49FE-95EA-FABE18E91CDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1CE73BB3-1D06-4FBE-A5BD-DF5706CFFB30} = {8B9DCD08-AF1B-4761-ADED-C0F05B5AE411}
+		{DE201FAC-8B31-49FE-95EA-FABE18E91CDF} = {8B9DCD08-AF1B-4761-ADED-C0F05B5AE411}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6AFEF6FD-A9A9-4B5B-9740-972B48CB4B24}

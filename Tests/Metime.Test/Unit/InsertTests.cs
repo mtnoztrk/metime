@@ -1,9 +1,10 @@
+using Metime.Models;
 using Metime.Test.Utils;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Metime.Test.Tests
+namespace Metime.Test.Unit
 {
     public class InsertTests
     {
@@ -16,12 +17,13 @@ namespace Metime.Test.Tests
         [Fact]
         public async Task InsertTest()
         {
-            var emp = new Employee { 
+            var emp = new Employee
+            {
                 Name = "Metin",
                 BirthDate = new DateTime(1991, 12, 8),
                 CreatedAt = DateTime.Now,
-                ShiftEnd = new TimeSpan(18,0,0),
-                ShiftStart = new TimeSpan(9,0,0),
+                ShiftEnd = new TimeSpan(18, 0, 0),
+                ShiftStart = new TimeSpan(9, 0, 0),
                 Kind = TimezoneFormat.Local
             };
             await _service.InsertAsync(emp);

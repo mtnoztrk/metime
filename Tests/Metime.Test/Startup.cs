@@ -1,7 +1,7 @@
 ﻿using Metime.Extensions;
 using Metime.Helpers;
+using Metime.Models;
 using Metime.Test.Utils;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Metime.Test
@@ -10,13 +10,9 @@ namespace Metime.Test
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TestDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("test");
-            }, ServiceLifetime.Transient);
-
             services.AddTransient<EmployeeService>();
             services.AddTransient<FlightService>();
+            services.AddTransient<AirportService>();
 
             services.AddMetime<FixedGetOffset>();
             services.AddCustomResolver<Flight, FlightGetOffset>();
