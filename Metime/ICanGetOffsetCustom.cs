@@ -1,10 +1,13 @@
 ﻿namespace Metime
 {
-    public interface ICanGetOffsetCustom<T> : ICanGetOffset where T : class, ITimezoneConvertible
+    public interface ICanGetOffsetCustom<T> where T : class, ITimezoneConvertible
     {
         /// <summary>
-        /// Properties of the entity that are using this resolver.
+        /// gets offset
         /// </summary>
-        string[] PropertyNames { get; init; }
+        /// <param name="rootEntity"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        int GetOffset(T rootEntity, string propertyName);
     }
 }

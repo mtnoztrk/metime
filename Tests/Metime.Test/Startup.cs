@@ -1,4 +1,5 @@
-﻿using Metime.Helpers;
+﻿using Metime.Extensions;
+using Metime.Helpers;
 using Metime.Test.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +16,12 @@ namespace Metime.Test
             }, ServiceLifetime.Transient);
 
             services.AddTransient<EmployeeService>();
+            services.AddTransient<FlightService>();
 
-
-
-
-            services.AddTransient<ICanGetOffset, FixedGetOffset>();
-            var offsetService = services.BuildServiceProvider().GetService<ICanGetOffset>();
+            services.AddMetime<FixedGetOffset>();
+            services.AddCustomResolver<Flight, FlightGetOffset>();
+            //below use metime replacement
+            var offsetService = services.BuildServiceProvider().GetService<TimezoneServiceProvider>();
             ServiceLocator.RegisterService(offsetService);
         }
     }

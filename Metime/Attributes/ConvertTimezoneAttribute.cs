@@ -91,12 +91,21 @@ namespace Metime.Attributes
             return result;
         }
 
-        private static int GetOffset(object rootEntity, Type entityType, string propertyName)
+        private static int GetOffset<T>(T rootEntity, Type entityType, object[] attributes)
         {
             var service = ServiceLocator.GetService<TimezoneServiceProvider>();
-            MethodInfo method = service.GetType().GetMethod("GetOffset");
-            method = method.MakeGenericMethod(entityType);
-            return (int)method.Invoke(service, new object[] { rootEntity, propertyName });
+            var attribute = (UseCustomResolverAttribute)attributes.FirstOrDefault(a => a.GetType() == typeof(UseCustomResolverAttribute));
+            if (attribute != null)
+            {
+                // invoke <T> method without object type in runtime
+                MethodInfo method = service.GetType().GetMethod("GetCustomOffset");
+                method = method.MakeGenericMethod(entityType);
+                return (int)method.Invoke(service, new object[] { rootEntity, attribute.PropertyName });
+            }
+            else
+            {
+                return service.GetOffset(rootEntity);
+            }
         }
 
         private static DateTime ToLocal(DateTime utcDateTime, int offset)
@@ -178,7 +187,7 @@ namespace Metime.Attributes
                             var castedPropValue = (DateTime)propValue;
                             if (castedPropValue == DateTime.MinValue) continue; // uninitialized datetimes should not be converted.
 
-                            var offset = GetOffset(rootEntity, entityType, p.Name);
+                            var offset = GetOffset(rootEntity, entityType, attributes);
                             if (targetFormat == TimezoneFormat.UTC)
                                 castedPropValue = ToUTC(castedPropValue, offset);
                             else
@@ -191,7 +200,7 @@ namespace Metime.Attributes
                             var propValue = p.GetValue(entity, null);
                             if (propValue == null) continue;
 
-                            var offset = GetOffset(rootEntity, entityType, p.Name);
+                            var offset = GetOffset(rootEntity, entityType, attributes);
                             if (targetFormat == TimezoneFormat.UTC)
                                 propValue = ToUTC((TimeSpan)propValue, offset);
                             else

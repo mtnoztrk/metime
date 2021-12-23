@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Metime
 {
@@ -15,25 +12,36 @@ namespace Metime
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
+
         /// <summary>
-        /// gets offset resolver.
+        /// finds offset with default resolver
         /// </summary>
         /// <param name="rootEntity"></param>
-        /// <param name="propertyName"></param>
         /// <returns></returns>
-        public int GetOffset<T>(object rootEntity, string propertyName) where T : class, ITimezoneConvertible
+        public int GetOffset(object rootEntity)
         {
             //TODO: cache these services, don't create scope all the time.
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-                var services = scope.ServiceProvider.GetServices<ICanGetOffsetCustom<T>>();
-                foreach (var service in services)
-                {
-                    //TODO: add check for multiple services doing the same properties.
-                    if (service.PropertyNames.Contains(propertyName)) return service.GetOffset(rootEntity);
-                }
                 var defaultService = scope.ServiceProvider.GetRequiredService<ICanGetOffset>();
                 return defaultService.GetOffset(rootEntity);
+            }
+        }
+
+        /// <summary>
+        /// finds offset with custom resolver
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="rootEntity"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public int GetCustomOffset<T>(T rootEntity, string propertyName) where T : class, ITimezoneConvertible
+        {
+            //TODO: cache these services, don't create scope all the time.
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<ICanGetOffsetCustom<T>>();
+                return service.GetOffset(rootEntity, propertyName);
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using Metime.Attributes;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Metime.Test.Utils
@@ -17,6 +19,11 @@ namespace Metime.Test.Utils
             await _dbContext.Employees.AddAsync(user);
             await _dbContext.SaveChangesAsync();
             return user;
+        }
+
+        public Task<Employee> GetAsync(int id)
+        {
+            return _dbContext.Employees.FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

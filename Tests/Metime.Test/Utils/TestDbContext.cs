@@ -15,6 +15,7 @@ namespace Metime.Test.Utils
         }
 
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Flight> Flights { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
