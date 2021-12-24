@@ -9,7 +9,7 @@ namespace Metime.Example.Controllers
     [Route("[controller]")]
     public class EmployeesController : ControllerBase
     {
-        [HttpPost()]
+        [HttpPost]
         public ActionResult<EmployeeResponse> Insert([FromBody] EmployeeRequest request)
         {
 
@@ -23,6 +23,7 @@ namespace Metime.Example.Controllers
 
             new EmployeeService().Insert(employee);
 
+            // below simple mapping logic
             var response = new EmployeeResponse();
             response.Name = employee.Name;
             response.BirthDate = employee.BirthDate;
