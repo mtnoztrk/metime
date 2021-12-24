@@ -22,7 +22,7 @@ namespace Metime.Test.Unit
         }
 
         [Fact]
-        public async Task Get_1()
+        public async Task Get_Employee()
         {
             var employee = await _eService.GetAsync(-1);
             Assert.True(employee.BirthDate == new DateTime(1991, 12, 8));
@@ -32,22 +32,22 @@ namespace Metime.Test.Unit
         }
 
         [Fact]
-        public async Task Get_2()
+        public async Task Get_Flight()
         {
             var flight = await _flService.GetAsync(-1);
             Assert.True(flight.CreatedAt == new DateTime(2021, 1, 1, 23, 0, 0));
-            Assert.True(flight.DepartureDate == new DateTime(2020, 3, 3, 18, 0, 0));
-            Assert.True(flight.ArrivalDate == new DateTime(2020, 3, 3, 18, 15, 0));
+            Assert.True(flight.DepartureDateTime == new DateTime(2020, 3, 3, 18, 0, 0));
+            Assert.True(flight.ArrivalDateTime == new DateTime(2020, 3, 3, 18, 15, 0));
         }
 
         [Fact]
-        public async Task Get_3()
+        public async Task Get_Airport()
         {
             var airport = await _aService.GetAsync(-1);
             var flight = airport.Outbound.First();
             Assert.True(flight.CreatedAt == new DateTime(2021, 1, 1, 23, 0, 0));
-            Assert.True(flight.DepartureDate == new DateTime(2020, 3, 3, 18, 0, 0));
-            Assert.True(flight.ArrivalDate == new DateTime(2020, 3, 3, 18, 15, 0));
+            Assert.True(flight.DepartureDateTime == new DateTime(2020, 3, 3, 18, 0, 0));
+            Assert.True(flight.ArrivalDateTime == new DateTime(2020, 3, 3, 18, 15, 0));
         }
     }
 }

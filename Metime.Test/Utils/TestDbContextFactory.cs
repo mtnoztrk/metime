@@ -7,7 +7,7 @@ namespace Metime.Test.Utils
     {
         public TestDataContextFactory()
         {
-            var builder = new DbContextOptionsBuilder<TestDbContext>();
+            var builder = new DbContextOptionsBuilder<DbContext>();
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             builder.UseSqlite(connection);
@@ -21,7 +21,7 @@ namespace Metime.Test.Utils
             _options = builder.Options;
         }
 
-        private readonly DbContextOptions<TestDbContext> _options;
+        private readonly DbContextOptions<DbContext> _options;
 
         public TestDbContext Create() => new TestDbContext(_options);
     }

@@ -6,8 +6,8 @@ namespace Metime.Test.Utils
     {
         public int GetOffset(Flight rootEntity, string propertyName)
         {
-            if (propertyName == nameof(Flight.ArrivalDate)) return rootEntity.Arrival.Offset;
-            else if (propertyName == nameof(Flight.DepartureDate)) return rootEntity.Departure.Offset;
+            if (propertyName == nameof(Flight.ArrivalDateTime)) return rootEntity.Arrival.OffsetInMinutes;
+            else if (propertyName == nameof(Flight.DepartureDateTime)) return rootEntity.Departure.OffsetInMinutes;
             else throw new System.Exception("No bueno");
         }
     }

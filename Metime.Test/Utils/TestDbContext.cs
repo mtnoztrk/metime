@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace Metime.Test.Utils
 {
-    public class TestDbContext : DbContext
+    public class TestDbContext : MetimeDbContext
     {
         public TestDbContext()
         {
 
         }
 
-        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options)
+        public TestDbContext(DbContextOptions<DbContext> options) : base(options)
         {
 
         }
@@ -23,20 +23,18 @@ namespace Metime.Test.Utils
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Airport>().HasMany(a => a.Inbound).WithOne(f => f.Arrival);
-            modelBuilder.Entity<Airport>().HasMany(a => a.Outbound).WithOne(f => f.Departure);
             modelBuilder.Entity<Airport>().HasData(new List<Airport>() {
                 new Airport
                 {
                     Id = -1,
-                    Name = "IST",
-                    Offset = 180,
+                    Code = "IST",
+                    OffsetInMinutes = 180,
                 },
                 new Airport
                 {
                     Id = -2,
-                    Name = "AMS",
-                    Offset = 120,
+                    Code = "AMS",
+                    OffsetInMinutes = 120,
                 },
             });
 
@@ -47,9 +45,9 @@ namespace Metime.Test.Utils
                     Code = "TK0069",
                     CreatedAt = new DateTime(2021, 1, 1, 20, 0, 0),
                     DepartureId = -1,
-                    DepartureDate = new DateTime(2020, 3, 3, 15, 0, 0),
+                    DepartureDateTime = new DateTime(2020, 3, 3, 15, 0, 0),
                     ArrivalId = -2,
-                    ArrivalDate = new DateTime(2020, 3, 3, 16, 15, 0),
+                    ArrivalDateTime = new DateTime(2020, 3, 3, 16, 15, 0),
                 }
             });
 
@@ -64,7 +62,7 @@ namespace Metime.Test.Utils
                     ShiftStart = new TimeSpan(6, 0, 0)
                 }
             });
-
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
