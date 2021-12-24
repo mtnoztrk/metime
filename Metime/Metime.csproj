@@ -1,21 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>Metime</AssemblyName>
-    <PackageId>Metime</PackageId>
-    <Version>0.2.4</Version>
-    <Authors>Metin Ozturk</Authors>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/mtnoztrk/metime</RepositoryUrl>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>Metime</AssemblyName>
+		<PackageId>Metime</PackageId>
+		<Title>Metime - Timezone Framework</Title>
+		<PackageDescription>
+			Timezone management framework with aspect oriented programming.
+		</PackageDescription>
+		<Authors>Metin Ozturk</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/mtnoztrk/metime</RepositoryUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>aop aspect core attribute timezone service</PackageTags>
+		
+		<Version>0.2.6</Version>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)/icon.png" Pack="true" PackagePath="/" />
+		<None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AspectInjector" Version="2.6.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AspectInjector" Version="2.6.1" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 </Project>
