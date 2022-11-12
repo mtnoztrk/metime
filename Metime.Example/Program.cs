@@ -19,8 +19,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseMetime();
 }
+
+app.UseMetime();
 
 app.UseAuthorization();
 
